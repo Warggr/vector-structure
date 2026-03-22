@@ -6,16 +6,16 @@ Lightweight utilities for working with _structured flat vectors_ and _block matr
 
 Consider a Newton algorithm for solving the KKT conditions, as described [here](https://won-j.github.io/M1399_000200-2021fall/lectures/22-newton/newton_constr.html):
 
-$
-\begin{pmatrix}
-    \nabla^2 f(x) & {\color{grey} Df(x)^T } & A^T \\
-    {\color{grey} -diag(\lambda) Df(x) & -diag(f(x)) & 0 } \\
-    A & {\color{grey} 0} & 0
-\end{pmatrix} \begin{pmatrix} x^* \\ {\color{grey} \lambda^*} \\ v^* \end{pmatrix} = \begin{pmatrix} \\ \dots \\ \end{pmatrix}
-$
+$$\begin{pmatrix}
+    \nabla^2 f(x) & \color{gray}{Df(x)^T} & A^T \\
+    \color{gray}{-diag(\lambda) Df(x)} & \color{gray}{-diag(f(x))} & \color{gray}{0} \\
+    A & \color{gray}{0} & 0
+\end{pmatrix} \begin{pmatrix} x^* \\ \color{gray}{\lambda^\*} \\ v^\* \end{pmatrix} = \begin{pmatrix} \\ \dots \\
+\end{pmatrix}$$
+
 where the grey components are only required when inequality constraints are present.
 
-```
+```python
 from vector_structure import VectorStructure
 
 structure = [("x", n)]
