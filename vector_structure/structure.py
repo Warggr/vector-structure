@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Generic, Sequence, TypeVar
 
 
 class SimpleSlice:
@@ -24,10 +24,13 @@ class SimpleSlice:
         return self.start - self.stop
 
 
-class VectorStructure:
+BlockName = TypeVar("BlockName")
+
+
+class VectorStructure(Generic[BlockName]):
     """Helper class to describe block vectors and block matrices."""
 
-    def __init__(self, sizes: Sequence[tuple[str, int]]):
+    def __init__(self, sizes: Sequence[tuple[BlockName, int]]):
         cuts = {}
         start = 0
         for k, v in sizes:
@@ -36,7 +39,7 @@ class VectorStructure:
         self.size = start
         self.cuts = cuts
 
-    def __getitem__(self, idx: str | Sequence[str] | slice) -> SimpleSlice:
+    def __getitem__(self, idx: BlockName | Sequence[BlockName] | slice) -> SimpleSlice:
         if isinstance(idx, str):
             return self.cuts[idx]
         elif isinstance(idx, slice):
