@@ -1,6 +1,6 @@
 [project]
 name = "vector-structure"
-version = "1.1.0"
+version = "2.0.0"
 description = ""
 authors = [{ name = "Pierre Ballif", email = "pierre@ballif.eu"}]
 license = "MIT"
@@ -15,6 +15,9 @@ classifiers = [
 keywords = ["vector", "structure", "block", "matrix"]
 dependencies = []
 
+[project.optional-dependencies]
+dev = ["pytest", "ruff"]
+
 [project.urls]
 Homepage = "https://github.com/warggr/vector-structure"
 Issues = "https://github.com/warggr/vector-structure/issues"
@@ -24,8 +27,13 @@ requires = ["hatchling >= 1.26"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.sdist]
-include = ["/vector_structure/", "/tests"]
+include = ["/vector_structure/"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
 
 [tool.ruff.lint]
 select = ["B", "A", "I", "D", "E4", "E7", "E9", "F"]
 ignore = ["D203", "D213", "D104", "D100", "D105", "D107"]
+per-file-ignores = { "tests/*" = ["D103"] }
