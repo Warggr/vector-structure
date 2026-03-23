@@ -3,13 +3,28 @@ name = "vector-structure"
 version = "1.0.0"
 description = ""
 authors = [{ name = "Pierre Ballif", email = "pierre@ballif.eu"}]
-license = { file = "LICENSE" }
+license = "MIT"
+license-files = ["LICENSE"]
+readme = "README.md"
+requires-python = ">=3.5"
 classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
 ]
 keywords = ["vector", "structure", "block", "matrix"]
 dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/warggr/vector-structure"
+Issues = "https://github.com/warggr/vector-structure/issues"
+
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.sdist]
+include = ["/vector_structure/", "/tests"]
 
 [tool.ruff.lint]
 select = ["B", "A", "I", "D", "E4", "E7", "E9", "F"]

@@ -1,6 +1,9 @@
+/venv/
+
 # cache files
 __pycache__/
 
 # Distribution / packaging
+dist/
 build/
 *.egg-info/
