@@ -3,6 +3,20 @@ from typing import Generic, Sequence, TypeVar
 BlockName = TypeVar("BlockName")
 
 
+def simple_slice_len(sl: slice):
+    """Compute the size of a 'simple' slice.
+
+    A simple slice is one with step 1 and no negative indices.
+    VectorStructure[...] always returns simple slices.
+    This function is just syntactic sugar for sl.stop - sl.start.
+    """
+    if sl.step not in (None, 1):
+        raise ValueError("Only slices with step 1 supported")
+    if sl.start < 0 or sl.stop < 0:
+        raise ValueError("Only slices with positive indices supported")
+    return sl.stop - sl.start
+
+
 class VectorStructure(Generic[BlockName]):
     """Helper class to describe block vectors and block matrices."""
 
