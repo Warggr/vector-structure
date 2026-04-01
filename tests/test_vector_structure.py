@@ -68,6 +68,21 @@ def test_invalid_sequence_type_raises():
         _ = vs[123]  # not a valid key or sequence
 
 
+def test_as_dict():
+    vs = VectorStructure([("x", 3), ("u", 2)])
+    li = [1, 2, 3, 4, 5]
+    cuts = vs.as_dict(li)
+    assert cuts["x"] == [1, 2, 3]
+    assert cuts["u"] == [4, 5]
+
+
+def test_block_size():
+    vs = VectorStructure([("x", 3), ("u", 2)])
+    assert vs.block_size("x") == 3
+    assert vs.block_size("u") == 2
+    assert vs.block_size(("x", "u")) == 5
+
+
 # --- numpy integration --------------------------------------------------------
 
 

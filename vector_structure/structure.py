@@ -1,6 +1,4 @@
-from typing import Generic, Sequence, TypeVar
-
-BlockName = TypeVar("BlockName")
+from typing import Generic, Protocol, Sequence, SupportsIndex, TypeVar, overload
 
 
 def simple_slice_len(sl: slice):
@@ -17,6 +15,26 @@ def simple_slice_len(sl: slice):
     return sl.stop - sl.start
 
 
+T = TypeVar("T", covariant=True)
+
+
+class ArrayLike(Protocol, Generic[T]):
+    """A list-like container that can be used with VectorStructure.
+
+    At least `list` and `np.ndarray` follow this protocol.
+    """
+
+    @overload
+    def __getitem__(self, idxs: SupportsIndex, /) -> T: ...
+    @overload
+    def __getitem__(self, idxs: slice, /) -> "ArrayLike[T]": ...
+    def __len__(self) -> int: ...
+
+
+BlockName = TypeVar("BlockName")
+SpecificArrayLike = TypeVar("SpecificArrayLike", bound=ArrayLike)
+
+
 class VectorStructure(Generic[BlockName]):
     """Helper class to describe block vectors and block matrices."""
 
@@ -28,6 +46,18 @@ class VectorStructure(Generic[BlockName]):
             start += v
         self.size = start
         self.cuts = cuts
+
+    def as_dict(self, arr: SpecificArrayLike) -> dict[BlockName, SpecificArrayLike]:
+        """Split the array into pieces according to the vector structure."""
+        if len(arr) != self.size:
+            raise ValueError(
+                f"Size mismatch: Array structure is {self.size}, array is {len(arr)}"
+            )
+        return {key: arr[sl] for key, sl in self.cuts.items()}
+
+    def block_size(self, idx: BlockName | tuple[BlockName, ...] | slice) -> int:
+        """Return the size of one or more blocks."""
+        return simple_slice_len(self[idx])
 
     def __getitem__(self, idx: BlockName | tuple[BlockName, ...] | slice) -> slice:
         """Get the indices for one or multiple blocks.
