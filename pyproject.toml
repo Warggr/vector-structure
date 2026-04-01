@@ -16,7 +16,7 @@ keywords = ["vector", "structure", "block", "matrix"]
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["pytest", "ruff"]
+dev = ["pytest", "ruff", "numpy"]
 
 [project.urls]
 Homepage = "https://github.com/warggr/vector-structure"

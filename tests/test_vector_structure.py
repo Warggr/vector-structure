@@ -1,4 +1,3 @@
-import numpy as np
 import pytest
 
 from vector_structure import VectorStructure
@@ -21,10 +20,10 @@ def test_size_and_slices():
 def test_single_block_access():
     vs = VectorStructure([("x", 3), ("u", 2)])
 
-    z = np.arange(vs.size)
+    z = list(range(vs.size))
 
-    assert np.all(z[vs["x"]] == np.array([0, 1, 2]))
-    assert np.all(z[vs["u"]] == np.array([3, 4]))
+    assert z[vs["x"]] == [0, 1, 2]
+    assert z[vs["u"]] == [3, 4]
 
 
 def test_multiple_block_access_contiguous():
@@ -87,6 +86,7 @@ def test_block_size():
 
 
 def test_numpy_assignment():
+    np = pytest.importorskip("numpy")
     vs = VectorStructure([("x", 3), ("u", 2)])
 
     z = np.zeros(vs.size)
