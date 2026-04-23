@@ -1,4 +1,4 @@
-from typing import Generic, Protocol, Sequence, SupportsIndex, TypeVar, Union, overload
+from typing import Generic, Protocol, Sequence, SupportsIndex, Tuple, TypeVar, Union, overload
 
 
 def simple_slice_len(sl: slice) -> int:
@@ -48,7 +48,7 @@ SpecificArrayLike = TypeVar("SpecificArrayLike", bound=ArrayLike)
 class VectorStructure(Generic[BlockName]):
     """Helper class to describe block vectors and block matrices."""
 
-    def __init__(self, sizes: Sequence[tuple[BlockName, int]]):
+    def __init__(self, sizes: Sequence[Tuple[BlockName, int]]):
         cuts = {}
         start = 0
         for k, v in sizes:
@@ -73,7 +73,7 @@ class VectorStructure(Generic[BlockName]):
             )
         return {key: arr[sl] for key, sl in self.cuts.items()}
 
-    def block_size(self, idx: Union[BlockName, tuple[BlockName, ...], slice]) -> int:
+    def block_size(self, idx: Union[BlockName, Tuple[BlockName, ...], slice]) -> int:
         """Return the size of one or more blocks.
 
         Args:
@@ -84,7 +84,7 @@ class VectorStructure(Generic[BlockName]):
         """
         return simple_slice_len(self[idx])
 
-    def __getitem__(self, idx: Union[BlockName, tuple[BlockName, ...], slice]) -> slice:
+    def __getitem__(self, idx: Union[BlockName, Tuple[BlockName, ...], slice]) -> slice:
         """Get the indices for one or multiple blocks.
 
         Example:
