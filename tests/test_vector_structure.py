@@ -136,3 +136,25 @@ def test_order_is_respected():
 
     assert vs["u"] == slice(0, 2)
     assert vs["x"] == slice(2, 5)
+
+
+def get_separators(st, colon="|"):
+    return map(len, st.split(colon))
+
+
+def test_repr_is_sensibly_formatted():
+    for make_key in [
+        lambda name: name,
+        lambda name: (name, 1),
+    ]:
+        vs = VectorStructure(
+            [
+                (make_key("a very long name!"), 2),
+                (make_key("z"), 2),
+                (make_key("x"), 100_000),
+            ]
+        )
+        r = repr(vs)
+        header, nums = r.split("\n")
+        header, nums = tuple(get_separators(header)), tuple(get_separators(nums))
+        assert header == nums

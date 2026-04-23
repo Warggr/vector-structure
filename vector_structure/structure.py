@@ -84,6 +84,16 @@ class VectorStructure(Generic[BlockName]):
         """
         return simple_slice_len(self[idx])
 
+    def __repr__(self):
+        labels = list(map(str, self.cuts.keys()))
+        sizes = [f"{simple_slice_len(v)}" for v in self.cuts.values()]
+        strlens = [max(len(i), len(j)) for i, j in zip(labels, sizes, strict=True)]
+        labels = [
+            f"{{:^{le}}}".format(v) for le, v in zip(strlens, labels, strict=True)
+        ]
+        sizes = [f"{{:^{le}}}".format(v) for le, v in zip(strlens, sizes, strict=True)]
+        return "|" + "|".join(labels) + "|\n|" + "|".join(sizes) + "|"
+
     def __getitem__(self, idx: BlockName | tuple[BlockName, ...] | slice) -> slice:
         """Get the indices for one or multiple blocks.
 
