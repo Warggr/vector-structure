@@ -1,5 +1,8 @@
 # vector-structure
 
+[![PyPi version](https://badgen.net/pypi/v/vector-structure/)](https://pypi.org/project/vector-structure)
+[![Documentation Status](https://readthedocs.org/projects/vector-structure/badge/?version=latest)](http://vector-structure.readthedocs.io/?badge=latest)
+
 Lightweight utilities for working with _structured flat vectors_ and _block matrices_ in NumPy.
 
 # Example usage
@@ -37,3 +40,5 @@ x = x_lambda_mu[vs["x"]]
 if ineq_constraints:
     lambda = x_lambda_mu[vs["lambda"]]
 ```
+
+For the full documentation, see [here](https://vector-structure.readthedocs.io)
