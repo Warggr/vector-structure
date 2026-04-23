@@ -1,12 +1,22 @@
 from typing import Generic, Protocol, Sequence, SupportsIndex, TypeVar, overload
 
 
-def simple_slice_len(sl: slice):
+def simple_slice_len(sl: slice) -> int:
     """Compute the size of a 'simple' slice.
 
-    A simple slice is one with step 1 and no negative indices.
+    A 'simple' slice is a `slice` with `(step=None or step=1) and start >= 0 and stop >= 0`.
     VectorStructure[...] always returns simple slices.
-    This function is just syntactic sugar for sl.stop - sl.start.
+    This function is just syntactic sugar for `sl.stop - sl.start`.
+
+    Args:
+        sl: "Simple" slice
+
+    Raises:
+        ValueError: If the slice is not a "simple" slice.
+
+    Returns:
+        The length of the slice, i.e. `len(li[sl])` for a container `li`.
+
     """
     if sl.step not in (None, 1):
         raise ValueError("Only slices with step 1 supported")
@@ -48,7 +58,15 @@ class VectorStructure(Generic[BlockName]):
         self.cuts = cuts
 
     def as_dict(self, arr: SpecificArrayLike) -> dict[BlockName, SpecificArrayLike]:
-        """Split the array into pieces according to the vector structure."""
+        """Split the array into pieces according to the vector structure.
+
+        Example:
+            >>> from vector_structure import VectorStructure
+            >>> x = VectorStructure([("x", 3), ("y", 1)])
+            >>> x.as_dict([1, 2, 3, 4])
+            {'x': [1, 2, 3], 'y': [4]}
+
+        """
         if len(arr) != self.size:
             raise ValueError(
                 f"Size mismatch: Array structure is {self.size}, array is {len(arr)}"
@@ -56,15 +74,35 @@ class VectorStructure(Generic[BlockName]):
         return {key: arr[sl] for key, sl in self.cuts.items()}
 
     def block_size(self, idx: BlockName | tuple[BlockName, ...] | slice) -> int:
-        """Return the size of one or more blocks."""
+        """Return the size of one or more blocks.
+
+        Args:
+            idx: Index. See :py:meth:`~vector_structure.VectorStructure.__getitem__`.
+
+        This is just syntactic sugar for `simple_slice_len(self[idxs])`
+
+        """
         return simple_slice_len(self[idx])
 
     def __getitem__(self, idx: BlockName | tuple[BlockName, ...] | slice) -> slice:
         """Get the indices for one or multiple blocks.
 
-        Note: when indexing by slice, both the start and the stop are included,
-        i.e. a["a":"c"] = a["a", "b", "c"].
-        This is different from the Python convention, but similar to Pandas.
+        Example:
+            >>> from vector_structure import VectorStructure
+            >>> x = VectorStructure([("x", 3), ("y", 2), ("z", 1)])
+            >>> li = [1, 2, 3, 4, 5, 6]
+            >>> li[x["y"]]
+            [4, 5]
+            >>> li[x["y":"z"]]
+            [4, 5, 6]
+            >>> li[x["x","y"]]
+            [1, 2, 3, 4, 5]
+
+        Note:
+            when indexing by slice, both the start and the stop are included,
+            i.e. a["a":"c"] = a["a", "b", "c"].
+            This is different from the Python convention, but similar to Pandas.
+
         """
         if isinstance(idx, slice):
             if idx.step is not None:
